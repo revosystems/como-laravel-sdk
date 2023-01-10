@@ -1,6 +1,21 @@
 # como-laravel-sdk
 
 Laravel SDK for Como
+
+## Installation
+
+First add this repository to the composer:
+
+```json
+    { "type": "vcs", "url": "https://github.com/revosystems/como-laravel-sdk" }
+```
+
+then you can require it via composer:
+
+```bash
+    composer require revosystems/como-laravel-sdk
+```
+
 ## Usage
 
 In order to make call to the Como API you should init the \Revo\ComoSdk\Api with the following parameters:
