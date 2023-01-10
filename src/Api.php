@@ -32,7 +32,7 @@ class Api
     protected function post(string $endpoint, array $params, array $headers = []): Response
     {
         $response = Http::withHeaders([...$this->defaultHeaders(), ...$headers])
-            ->post($this->url() . $endpoint, $params)
+            ->post(rtrim($this->url(), '/') . '/' . ltrim($endpoint, '/'), $params)
             ->throw();
         
         if($response->json('status') === static::ERROR) {
