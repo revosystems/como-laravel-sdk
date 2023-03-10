@@ -5,6 +5,9 @@ namespace Revo\ComoSdk;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Http;
 use Revo\ComoSdk\Exceptions\ComoException;
+use Revo\ComoSdk\Models\Customer;
+use Revo\ComoSdk\Models\Purchase;
+use Revo\ComoSdk\Models\Responses\MemberDetailsResponse;
 
 class Api
 {
@@ -19,16 +22,39 @@ class Api
         protected string $sourceVersion,
     ){}
 
-    public function quickRegister(string $phone, ?string $code = null): Response
+    public function quickRegister(string $phone, ?string $code = null): bool
     {
-        return $this->post('registration/quick', [
-            'customer' => [
-                'phoneNumber' => $phone,
-            ],
+        $this->post('advanced/registration/quick', [
+            'customer' => (new Customer(phoneNumber: $phone))->toArray(),
             'quickRegistrationCode' => $code,
         ]);
+
+        return true;
     }
 
+    public function getMemberDetails(Customer $customer, ?Purchase $purchase = null): MemberDetailsResponse
+    {
+        $response = $this->post('getMemberDetails?returnAssets=active&expand=assets.redeemable', [
+            'customer' => $customer->toArray(),
+            ...($purchase ? ['purchase' => $purchase->toArray()] : []),
+        ]);
+
+        return new MemberDetailsResponse(
+            $response->json('membership'),
+            $response->json('memberNotes', []),
+        );
+    }
+
+    public function sendIdentificationCode(string $phone): bool
+    {
+        $this->post('advanced/sendIdentificationCode', [
+            'customer' => (new Customer(phoneNumber: $phone))->toArray(),
+        ]);
+
+        return true;
+    }
+
+    // START PROTECTED METHODS
     protected function post(string $endpoint, array $params, array $headers = []): Response
     {
         $response = Http::withHeaders([...$this->defaultHeaders(), ...$headers])
@@ -58,6 +84,6 @@ class Api
 
     protected function url(): string
     {
-        return 'https://api.prod.bcomo.com/api/v4/advanced/';
+        return 'https://api.prod.bcomo.com/api/v4/';
     }
 }
