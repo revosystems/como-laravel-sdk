@@ -3,11 +3,14 @@
 namespace Revo\ComoSdk\Models;
 
 use Carbon\Carbon;
-use Illuminate\Support\Collection;
+use Illuminate\Contracts\Support\Arrayable as ArrayableContract;
+use Revo\ComoSdk\Models\Concerns\Arrayable;
 use Revo\ComoSdk\Models\Enums\AssetStatus;
 
-class Asset
+class Asset implements ArrayableContract
 {
+    use Arrayable;
+
     public function __construct(
         public string $key,
         public string $name,
@@ -19,11 +22,6 @@ class Asset
         public ?Carbon $validUntil = null,
         public ?NonRedeemableCause $nonRedeemableCause = null,
     ){}
-
-    public static function manyFromArray(array $assets): Collection
-    {
-        return collect($assets)->map(fn (array $asset) => static::fromArray($asset));
-    }
 
     public static function fromArray(array $asset): static
     {

@@ -3,11 +3,15 @@
 namespace Revo\ComoSdk;
 
 use Illuminate\Http\Client\Response;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Http;
 use Revo\ComoSdk\Exceptions\ComoException;
 use Revo\ComoSdk\Models\Customer;
+use Revo\ComoSdk\Models\MemberNotes;
 use Revo\ComoSdk\Models\Purchase;
+use Revo\ComoSdk\Models\Responses\GetBenefitsResponse;
 use Revo\ComoSdk\Models\Responses\MemberDetailsResponse;
+use Revo\ComoSdk\Models\Responses\SubmitPurchaseResponse;
 
 class Api
 {
@@ -51,6 +55,63 @@ class Api
             'customer' => (new Customer(phoneNumber: $phone))->toArray(),
         ]);
 
+        return true;
+    }
+
+    public function getBenefits(
+        Collection $customers,
+        Purchase $purchase,
+        Collection $assets
+    ): GetBenefitsResponse {
+        $response = $this->post('getBenefits?expand=discountByDiscount', [
+            'customers' => $customers->toArray(),
+            'purchase' => $purchase->toArray(),
+            'redeemAssets' => $assets->toArray(),
+        ]);
+
+        return new GetBenefitsResponse(
+            $response->json('deals', []),
+            $response->json('redeemAssets', []),
+            $response->json('totalDiscountsSum')
+        );
+    }
+
+    public function submitPurchase(
+        Purchase $purchase,
+        Collection $customers,
+        Collection $assets,
+        Collection $deals,
+        bool $closed,
+    ): SubmitPurchaseResponse {
+
+        $append = $closed ? '' : '?status=open';
+        $response = $this->post("submitPurchase{$append}", [
+            'customers' => $customers->toArray(),
+            'purchase' => $purchase->toArray(),
+            ...($deals->isEmpty() ? [] : ['deals' => $deals->toArray()]),
+            ...($assets->isEmpty() ? [] : ['redeemAssets' => $assets->toArray()]),
+        ]);
+
+        return new SubmitPurchaseResponse(
+            confirmation: $response->json('confirmation'),
+            memberNotes: $response->json('memeberNotes', []),
+        );
+    }
+
+    public function voidPurchase(Purchase $purchase): bool
+    {
+        $this->post('voidPurchase', [
+            'purchase' => $purchase->toArray(),
+        ]);
+
+        return true;
+    }
+
+    public function cancelPurchase(string $confirmation): bool
+    {
+        $this->post('cancelPurchase', [
+            'confirmation' => $confirmation,
+        ]);
         return true;
     }
 
