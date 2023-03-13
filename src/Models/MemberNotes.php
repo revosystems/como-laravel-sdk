@@ -2,10 +2,14 @@
 
 namespace Revo\ComoSdk\Models;
 
+use Illuminate\Contracts\Support\Arrayable as ArrayableContract;
 use Illuminate\Support\Collection;
+use Revo\ComoSdk\Models\Concerns\Arrayable;
 
-class MemberNotes
+class MemberNotes implements ArrayableContract
 {
+    use Arrayable;
+
     public function __construct(
         public string $content,
         public string $type,
@@ -17,10 +21,5 @@ class MemberNotes
             content: $memberNote['content'],
             type: $memberNote['type'],
         );
-    }
-
-    public static function manyFromArray(array $memberNotes): Collection
-    {
-        return collect($memberNotes)->map(fn (array $memberNote) => static::fromArray($memberNote));
     }
 }
