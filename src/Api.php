@@ -86,7 +86,7 @@ class Api
 
         $append = $closed ? '' : '?status=open';
         $response = $this->post("submitPurchase{$append}", [
-            'customers' => $customers->toArray(),
+            ...($customers->isEmpty() ? [] : ['customers' => $customers->toArray()]),
             'purchase' => $purchase->toArray(),
             ...($deals->isEmpty() ? [] : ['deals' => $deals->toArray()]),
             ...($assets->isEmpty() ? [] : ['redeemAssets' => $assets->toArray()]),

@@ -2,6 +2,8 @@
 
 namespace Revo\ComoSdk\Tests\Features;
 
+use Carbon\Carbon;
+use Illuminate\Http\Client\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Http;
 use Revo\ComoSdk\Api;
@@ -326,4 +328,50 @@ it('can submit purchase', function() {
 
     $this->assertEquals('test_confirmation', $response->confirmation);
     $this->assertCount(0, $response->memberNotes);
+});
+
+it('can submit purchase without customer', function() {
+    Carbon::setTestNow(Carbon::parse('2023-03-13 10:00:00'));
+    Http::fake([
+        'https://api.prod.bcomo.com/api/v4/submitPurchase' => Http::response(['status' => 'ok', 'confirmation' => 'test_confirmation']),
+        '*' => Http::response('', 500),
+    ]);
+
+    $api = new Api(
+        apiKey: '1',
+        posId: '1',
+        branchId: 'test',
+        sourceName: 'test_app',
+        sourceType: 'app',
+        sourceVersion: '1.0',
+    );
+
+    $purchase = new Purchase(
+        now(),
+        1000,
+        OrderType::DINE_IN
+    );
+
+    $response = $api->submitPurchase(
+        purchase: $purchase,
+        customers: collect(),
+        assets: collect(),
+        deals: collect(),
+        closed: true,
+    );
+
+    Http::assertSent(function (Request $request) {
+        tap(json_decode($request->body(), true), function($data) {
+            $this->assertNotNull($data['purchase'] ?? null);
+            $this->assertEquals('2023-03-13T10:00:00Z', $data['purchase']['openTime']);
+            $this->assertEquals('dineIn', $data['purchase']['orderType']);
+            $this->assertEquals(1000, $data['purchase']['totalAmount']);
+            $this->assertNotNull($data['purchase']['transactionId']);
+
+            $this->assertNull($data['customers'] ?? null);
+            $this->assertNull($data['deals'] ?? null);
+            $this->assertNull($data['assets'] ?? null);
+        });
+        return true;
+    });
 });
