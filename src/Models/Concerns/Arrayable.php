@@ -17,7 +17,7 @@ trait Arrayable
                     return $property;
                 }
             })
-            ->filter()
+            ->filter(fn($property) => $property != null)
             ->all();
     }   
     

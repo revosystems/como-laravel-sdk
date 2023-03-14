@@ -352,7 +352,7 @@ it('can submit purchase without customer', function() {
         OrderType::DINE_IN
     );
 
-    $response = $api->submitPurchase(
+    $api->submitPurchase(
         purchase: $purchase,
         customers: collect(),
         assets: collect(),
