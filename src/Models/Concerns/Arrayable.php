@@ -2,6 +2,7 @@
 
 namespace Revo\ComoSdk\Models\Concerns;
 
+use Illuminate\Support\Collection;
 use Throwable;
 
 trait Arrayable
@@ -16,7 +17,12 @@ trait Arrayable
                     return $property;
                 }
             })
-            ->filter()
+            ->filter(fn($property) => $property != null)
             ->all();
-    }    
+    }   
+    
+    public static function manyFromArray(array $assets): Collection
+    {
+        return collect($assets)->map(fn (array $asset) => static::fromArray($asset));
+    } 
 }
