@@ -64,7 +64,7 @@ class Api
         Collection $assets
     ): GetBenefitsResponse {
         $response = $this->post('getBenefits?expand=discountByDiscount', [
-            'customers' => $customers->toArray(),
+            ...($customers->isEmpty() ? [] : ['customers' => $customers->toArray()]),
             'purchase' => $purchase->toArray(),
             'redeemAssets' => $assets->toArray(),
         ]);
