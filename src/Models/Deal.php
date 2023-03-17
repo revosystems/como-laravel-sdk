@@ -24,4 +24,12 @@ class Deal implements ArrayableContract
             benefits: Benefit::manyFromArray($deal['benefits'] ?? []),
         );
     }
+
+    public function purchaseDeal(): PurchaseDeal
+    {
+        return new PurchaseDeal(
+            key: $this->key,
+            appliedAmount: $this->benefits->sum->getDiscount(),
+        );
+    }
 }

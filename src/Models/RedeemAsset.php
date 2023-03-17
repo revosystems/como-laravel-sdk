@@ -30,4 +30,13 @@ class RedeemAsset implements ArrayableContract
             code: $redeemAsset['code'] ?? null,
         );
     }
+
+    public function purchaseAsset(): PurchaseAsset
+    {
+        return new PurchaseAsset(
+            key: $this->key,
+            code: $this->code,
+            appliedAmount: $this->benefits->sum->getDiscount(),
+        );
+    }
 }

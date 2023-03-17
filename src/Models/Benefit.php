@@ -27,4 +27,11 @@ class Benefit implements ArrayableContract
             extendedData: ExtendedData::manyFromArray($benefit['extendedData'] ?? []),
         );
     }
+
+    public function getDiscount(): int
+    {
+        return $this->type == BenefitType::DISCOUNT
+            ? $this->sum
+            : 0;
+    }
 }

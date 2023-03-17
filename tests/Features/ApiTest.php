@@ -318,8 +318,8 @@ it('can submit purchase', function() {
     $response = $api->submitPurchase(
         purchase: $purchase,
         customers: collect([new Customer(phoneNumber:'654654654')]),
-        assets: collect(),
-        deals: collect(),
+        purchaseAssets: collect(),
+        purchaseDeals: collect(),
         closed: true,
     );
 
@@ -355,8 +355,8 @@ it('can submit purchase without customer', function() {
     $api->submitPurchase(
         purchase: $purchase,
         customers: collect(),
-        assets: collect(),
-        deals: collect(),
+        purchaseAssets: collect(),
+        purchaseDeals: collect(),
         closed: true,
     );
 

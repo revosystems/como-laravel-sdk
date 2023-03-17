@@ -79,8 +79,8 @@ class Api
     public function submitPurchase(
         Purchase $purchase,
         Collection $customers,
-        Collection $assets,
-        Collection $deals,
+        Collection $purchaseAssets,
+        Collection $purchaseDeals,
         bool $closed,
     ): SubmitPurchaseResponse {
 
@@ -88,8 +88,8 @@ class Api
         $response = $this->post("submitPurchase{$append}", [
             ...($customers->isEmpty() ? [] : ['customers' => $customers->toArray()]),
             'purchase' => $purchase->toArray(),
-            ...($deals->isEmpty() ? [] : ['deals' => $deals->toArray()]),
-            ...($assets->isEmpty() ? [] : ['redeemAssets' => $assets->toArray()]),
+            ...($purchaseDeals->isEmpty() ? [] : ['deals' => $purchaseDeals->toArray()]),
+            ...($purchaseAssets->isEmpty() ? [] : ['redeemAssets' => $purchaseAssets->toArray()]),
         ]);
 
         return new SubmitPurchaseResponse(
