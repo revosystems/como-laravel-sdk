@@ -17,7 +17,8 @@ trait Arrayable
                     return $property;
                 }
             })
-            ->filter(fn($property) => $property != null)
+            // Filter out properties with null value or empty string, array or collection
+            ->filter(fn($property) => $property != null || $property === 0)
             ->all();
     }   
     
