@@ -14,7 +14,7 @@ class GetBenefitsResponse
     public function __construct(
         array $deals,
         array $assets,
-        public int $totalDiscountsSum,
+        public ?int $totalDiscountsSum,
     ){
         $this->deals = Deal::manyFromArray($deals);
         $this->assets = RedeemAsset::manyFromArray($assets);
