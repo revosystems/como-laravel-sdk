@@ -7,10 +7,11 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Http;
 use Revo\ComoSdk\Exceptions\ComoException;
 use Revo\ComoSdk\Models\Customer;
-use Revo\ComoSdk\Models\MemberNotes;
 use Revo\ComoSdk\Models\Purchase;
+use Revo\ComoSdk\Models\Responses\CancelPaymentResponse;
 use Revo\ComoSdk\Models\Responses\GetBenefitsResponse;
 use Revo\ComoSdk\Models\Responses\MemberDetailsResponse;
+use Revo\ComoSdk\Models\Responses\PaymentResponse;
 use Revo\ComoSdk\Models\Responses\SubmitPurchaseResponse;
 
 class Api
@@ -113,6 +114,35 @@ class Api
             'confirmation' => $confirmation,
         ]);
         return true;
+    }
+
+    public function payment(Customer $customer, Purchase $purchase, int $amount, ?string $code = null): PaymentResponse
+    {
+        $response = $this->post('payment', [
+            'customer' => $customer->toArray(),
+            'purchase' => $purchase->toArray(),
+            'amount' => $amount,
+            'verificationCode' => $code,
+        ]);
+
+        return new PaymentResponse(
+            payments: $response->json('payments'),
+            confirmation: $response->json('confirmation'),
+            type: $response->json('type'),
+            updatedBalance: $response->json('updatedBalance'),
+        );
+    }
+
+    public function cancelPayment(string $confirmation): CancelPaymentResponse
+    {
+        $response = $this->post('cancelPayment', [
+            'confirmation' => $confirmation,
+        ]);
+
+        return new CancelPaymentResponse(
+            type: $response->json('type'),
+            balance: $response->json('balance'),
+        );
     }
 
     // START PROTECTED METHODS

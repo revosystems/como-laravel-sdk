@@ -47,4 +47,9 @@ class Membership
             tags: isset($membership['tags']) ? collect($membership['tags']) : null,
         );
     }
+
+    public function getTotalBalance(): int
+    {
+        return $this->pointsBalance->balance->monetary + $this->creditBalance->balance->monetary;
+    }
 }
