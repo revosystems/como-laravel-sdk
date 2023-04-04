@@ -18,7 +18,7 @@ class Payment implements ArrayableContract
     {
         return new static(
             paymentMethod: $array['paymentMethod'],
-            amount: - $array['amount'],
+            amount: abs($array['amount']),
         );
     }
 }
