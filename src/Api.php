@@ -27,10 +27,10 @@ class Api
         protected string $sourceVersion,
     ){}
 
-    public function quickRegister(string $phone, ?string $code = null): bool
+    public function quickRegister(Customer $customer, ?string $code = null): bool
     {
         $this->post('advanced/registration/quick', [
-            'customer' => (new Customer(phoneNumber: $phone))->toArray(),
+            'customer' => $customer->registerData(),
             'quickRegistrationCode' => $code,
         ]);
 

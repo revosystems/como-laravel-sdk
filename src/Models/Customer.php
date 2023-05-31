@@ -14,5 +14,11 @@ class Customer implements ArrayableContract
         public ?string $email = null,
         public ?string $appClientId = null,
         public ?string $customIdentifier = null,
+        public ?string $firstName = null,
     ){}
+
+    public function registerData(): array
+    {
+        return array_filter($this->toArray(), fn ($key) => in_array($key, ['phoneNumber', 'email', 'firstName']), ARRAY_FILTER_USE_KEY);
+    }
 }
