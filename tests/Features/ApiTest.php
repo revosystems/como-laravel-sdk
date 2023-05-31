@@ -42,9 +42,48 @@ it('can quick register users', function() {
         sourceVersion: '1.0',
     );
 
-    $response = $api->quickRegister('654654654');
+    $response = $api->quickRegister(new Customer(phoneNumber:'654654654'));
 
     $this->assertTrue($response);
+
+    Http::assertSent(function (Request $request) {
+        $this->assertEquals([
+            'phoneNumber' => '654654654',
+        ], $request['customer']);
+        return true;
+    });
+});
+
+it('can quick register users with full info', function() {
+    Http::fake([
+        'https://api.prod.bcomo.com/api/v4/advanced/registration/quick' => Http::response(['status' => 'ok']),
+        '*' => Http::response('', 500),
+    ]);
+
+    $api = new Api(
+        apiKey: '1',
+        posId: '1',
+        branchId: 'test',
+        sourceName: 'test_app',
+        sourceType: 'app',
+        sourceVersion: '1.0',
+    );
+
+    $response = $api->quickRegister(new Customer(
+        phoneNumber:'654654654',
+        email: 'test@revo.works',
+        firstName: 'Test',
+    ));
+
+    $this->assertTrue($response);
+    Http::assertSent(function (Request $request) {
+        $this->assertEquals([
+            'phoneNumber' => '654654654',
+            'email' => 'test@revo.works',
+            'firstName' => 'Test',
+        ], $request['customer']);
+        return true;
+    });
 });
 
 it('can get member details', function() {
@@ -153,7 +192,7 @@ it('thorws exception on error status', function() {
         sourceVersion: '1.0',
     );
 
-    $api->quickRegister('654654654');
+    $api->quickRegister(new Customer('654654654'));
 })->throws(ComoException::class, '1111: Some sneaky error.');
 
 it('can get benefits', function() {

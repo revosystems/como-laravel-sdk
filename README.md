@@ -48,9 +48,7 @@ You can call the quick register endpoint with this method:
 
 ```php
 $response = $api->quickRegister(
-    string $phone,
+    \Revo\ComoSdk\Models\Customer $customer,
     ?string $code = null,
 )
 ```
-
-All api actions return an \Illuminate\Http\Client\Response.
