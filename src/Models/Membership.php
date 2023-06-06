@@ -10,7 +10,7 @@ use Revo\ComoSdk\Models\Enums\MembershipStatus;
 class Membership
 {
     public function __construct(
-        public string $phone,
+        public ?string $phone,
         public MembershipStatus $status,
         public Carbon $createdOn,
         public Balance $pointsBalance,
@@ -30,7 +30,7 @@ class Membership
     public static function fromArray(array $membership): static
     {
         return new static(
-            phone: $membership['phoneNumber'],
+            phone: $membership['phoneNumber'] ?? null,
             status: MembershipStatus::from($membership['status']),
             createdOn: Carbon::parse($membership['createdOn']),
             pointsBalance: Balance::fromArray($membership['pointsBalance']),

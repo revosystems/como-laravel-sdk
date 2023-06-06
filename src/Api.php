@@ -50,10 +50,10 @@ class Api
         );
     }
 
-    public function sendIdentificationCode(string $phone): bool
+    public function sendIdentificationCode(Customer $customer): bool
     {
         $this->post('advanced/sendIdentificationCode', [
-            'customer' => (new Customer(phoneNumber: $phone))->toArray(),
+            'customer' => $customer->toArray(),
         ]);
 
         return true;
