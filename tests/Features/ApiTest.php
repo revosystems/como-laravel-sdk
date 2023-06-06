@@ -167,7 +167,7 @@ it('can request identification code', function() {
         sourceVersion: '1.0',
     );
 
-    $response = $api->sendIdentificationCode(phone:'654654654');
+    $response = $api->sendIdentificationCode(new Customer(phoneNumber:'654654654'));
 
     $this->assertTrue($response);
 });
