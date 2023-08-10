@@ -35,7 +35,7 @@ class Membership
             createdOn: Carbon::parse($membership['createdOn']),
             pointsBalance: Balance::fromArray($membership['pointsBalance']),
             creditBalance: Balance::fromArray($membership['creditBalance']),
-            assets: Asset::manyFromArray($membership['assets']),
+            assets: Asset::manyFromArray($membership['assets'] ?? []),
             firstName: $membership['firstName'] ?? null,
             lastName: $membership['lastName'] ?? null,
             birthday: $membership['birthday'] ?? null,
