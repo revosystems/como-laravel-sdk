@@ -35,7 +35,7 @@ class RedeemAsset implements ArrayableContract
     {
         return new PurchaseAsset(
             key: $this->key,
-            code: $this->code,
+            code: $this->key ? null : $this->code,
             appliedAmount: $this->benefits->sum->getDiscount(),
         );
     }
