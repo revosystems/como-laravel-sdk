@@ -141,7 +141,7 @@ class Api
 
         return new CancelPaymentResponse(
             type: $response->json('type'),
-            balance: $response->json('balance'),
+            balance: $response->json('updatedBalance'),
         );
     }
 
