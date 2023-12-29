@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Http;
 use Revo\ComoSdk\Exceptions\ComoException;
 use Revo\ComoSdk\Models\Customer;
 use Revo\ComoSdk\Models\Purchase;
+use Revo\ComoSdk\Models\RegistrationData;
 use Revo\ComoSdk\Models\Responses\CancelPaymentResponse;
 use Revo\ComoSdk\Models\Responses\GetBenefitsResponse;
 use Revo\ComoSdk\Models\Responses\MemberDetailsResponse;
@@ -144,6 +145,16 @@ class Api
             balance: $response->json('updatedBalance'),
         );
     }
+
+    public function updateMember(Customer $customer, RegistrationData $data): bool
+    {
+        $this->post('advanced/updateMember', [
+            'customer' => $customer->toArray(),
+            'registrationData' => $data->toArray(),
+        ]);
+        return true;
+    }
+
 
     // START PROTECTED METHODS
     protected function post(string $endpoint, array $params, array $headers = []): Response
