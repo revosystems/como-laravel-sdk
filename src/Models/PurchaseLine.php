@@ -18,5 +18,6 @@ class PurchaseLine implements ArrayableContract
         public int $quantity,
         public int $grossAmount,
         public int $netAmount,
+        public ?array $tags = null,
     ){}
 }
