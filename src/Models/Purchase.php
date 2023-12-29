@@ -26,6 +26,7 @@ class Purchase implements ArrayableContract
         public ?string $transactionId = null,
         public ?string $relatedTransaction = null,
         public ?Collection $meansOfPayment = null,
+        public ?array $tags = null,
     ){
         $this->transactionId ??= Uuid::uuid4()->toString();
         $this->orderType = $orderType->value;
