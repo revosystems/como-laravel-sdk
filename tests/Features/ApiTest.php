@@ -23,6 +23,7 @@ use Revo\ComoSdk\Models\MemberNotes;
 use Revo\ComoSdk\Models\Membership;
 use Revo\ComoSdk\Models\Purchase;
 use Revo\ComoSdk\Models\RedeemAsset;
+use Revo\ComoSdk\Models\RegistrationData;
 use Revo\ComoSdk\Models\Responses\GetBenefitsResponse;
 use Revo\ComoSdk\Models\Responses\MemberDetailsResponse;
 use Revo\ComoSdk\Models\Responses\SubmitPurchaseResponse;
@@ -410,6 +411,44 @@ it('can submit purchase without customer', function() {
             $this->assertNull($data['customers'] ?? null);
             $this->assertNull($data['deals'] ?? null);
             $this->assertNull($data['assets'] ?? null);
+        });
+        return true;
+    });
+});
+
+it('can update member', function() {
+    Http::fake([
+        'https://api.prod.bcomo.com/api/v4/advanced/updateMember' => Http::response(['status' => 'ok']),
+        '*' => Http::response('', 500),
+    ]);
+
+    $api = new Api(
+        apiKey: '1',
+        posId: '1',
+        branchId: 'test',
+        sourceName: 'test_app',
+        sourceType: 'app',
+        sourceVersion: '1.0',
+    );
+
+    $data = new RegistrationData(
+        allowSMS: true,
+        allowEmail: true,
+        termsOfUse: true,
+    );
+
+    $api->updateMember(
+        customer: new Customer(phoneNumber:'654654654'),
+        data: $data,
+    );
+
+    Http::assertSent(function (Request $request) {
+        tap(json_decode($request->body(), true), function($data) {
+            $this->assertEquals(['phoneNumber' => '654654654'], $data['customer']);
+            $this->assertCount(3, $data['registrationData']);
+            $this->assertTrue($data['registrationData']['allowSMS']);
+            $this->assertTrue($data['registrationData']['allowEmail']);
+            $this->assertTrue($data['registrationData']['termsOfUse']);
         });
         return true;
     });
