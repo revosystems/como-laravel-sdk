@@ -96,7 +96,7 @@ class Api
 
         return new SubmitPurchaseResponse(
             confirmation: $response->json('confirmation'),
-            memberNotes: $response->json('memeberNotes', []),
+            memberNotes: $response->json('memberNotes', []),
         );
     }
 
