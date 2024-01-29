@@ -26,6 +26,7 @@ class Api
         protected string $sourceName,
         protected string $sourceType,
         protected string $sourceVersion,
+        protected string $baseUrl = 'https://api.prod.bcomo.com/api/v4/',
     ){}
 
     public function quickRegister(Customer $customer, ?string $code = null): bool
@@ -186,6 +187,6 @@ class Api
 
     protected function url(): string
     {
-        return 'https://api.prod.bcomo.com/api/v4/';
+        return $this->baseUrl;
     }
 }
