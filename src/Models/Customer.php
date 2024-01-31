@@ -16,6 +16,7 @@ class Customer implements ArrayableContract
         public ?string $customIdentifier = null,
         public ?string $firstName = null,
         public ?string $temporaryToken = null,
+        public ?string $commonExtId = null,
     ){}
 
     public function registerData(): array
