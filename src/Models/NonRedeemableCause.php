@@ -2,8 +2,13 @@
 
 namespace Revo\ComoSdk\Models;
 
-class NonRedeemableCause
+use Illuminate\Contracts\Support\Arrayable as ArrayableContract;
+use Revo\ComoSdk\Models\Concerns\Arrayable;
+
+class NonRedeemableCause implements ArrayableContract
 {
+    use Arrayable;
+    
     public function __construct(
         public string $code,
         public string $message,

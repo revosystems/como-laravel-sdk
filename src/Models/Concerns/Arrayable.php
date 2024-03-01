@@ -2,8 +2,10 @@
 
 namespace Revo\ComoSdk\Models\Concerns;
 
+use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Throwable;
+use BackedEnum;
 
 trait Arrayable
 {
@@ -12,7 +14,11 @@ trait Arrayable
         return collect(get_object_vars($this))
             ->map(function($property) {
                 try {
-                    return $property->toArray();
+                    return match (true) {
+                        $property instanceof Carbon => $property->toIso8601ZuluString(),
+                        $property instanceof BackedEnum => $property->value,
+                        default => $property->toArray(),
+                    };
                 } catch (Throwable) {
                     return $property;
                 }
