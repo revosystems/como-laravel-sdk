@@ -139,7 +139,7 @@ class Api
     {
         $response = $this->post('cancelPayment', [
             'confirmation' => $confirmation,
-        ]);
+        ], timeout: 10);
 
         return new CancelPaymentResponse(
             type: $response->json('type'),
@@ -158,9 +158,10 @@ class Api
 
 
     // START PROTECTED METHODS
-    protected function post(string $endpoint, array $params, array $headers = []): Response
+    protected function post(string $endpoint, array $params, array $headers = [], int $timeout = 30): Response
     {
         $response = Http::withHeaders([...$this->defaultHeaders(), ...$headers])
+            ->timeout($timeout)
             ->post(rtrim($this->url(), '/') . '/' . ltrim($endpoint, '/'), $params)
             ->throw();
         
