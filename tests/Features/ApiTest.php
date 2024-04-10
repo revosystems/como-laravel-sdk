@@ -453,3 +453,49 @@ it('can update member', function() {
         return true;
     });
 });
+
+
+it('can register member', function() {
+    Http::fake([
+        'https://api.prod.bcomo.com/api/v4/advanced/registerMember' => Http::response(['status' => 'ok']),
+        '*' => Http::response('', 500),
+    ]);
+
+    $api = new Api(
+        apiKey: '1',
+        posId: '1',
+        branchId: 'test',
+        sourceName: 'test_app',
+        sourceType: 'app',
+        sourceVersion: '1.0',
+    );
+
+    $data = new RegistrationData(
+        email: 'test@test.test',
+        phoneNumber: '34666666666',
+        firstName: 'name',
+        lastName: 'last',
+        allowSMS: true,
+        allowEmail: true,
+        termsOfUse: true,
+    );
+
+    $api->register(
+        data: $data,
+    );
+
+    Http::assertSent(function (Request $request) {
+        tap(json_decode($request->body(), true), function($data) {
+            $this->assertCount(7, $data['registrationData']);
+            $this->assertEquals('34666666666', $data['registrationData']['phoneNumber']);
+            $this->assertEquals('name', $data['registrationData']['firstName']);
+            $this->assertEquals('last', $data['registrationData']['lastName']);
+            $this->assertEquals('test@test.test', $data['registrationData']['email']);
+            $this->assertTrue($data['registrationData']['allowSMS']);
+            $this->assertTrue($data['registrationData']['allowSMS']);
+            $this->assertTrue($data['registrationData']['allowEmail']);
+            $this->assertTrue($data['registrationData']['termsOfUse']);
+        });
+        return true;
+    });
+});

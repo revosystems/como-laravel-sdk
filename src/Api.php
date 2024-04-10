@@ -39,6 +39,17 @@ class Api
         return true;
     }
 
+    public function register(RegistrationData $data): bool
+    {
+        $this->post('advanced/registerMember', [
+            'registrationData' => collect($data->toArray())
+                ->mapWithKeys(fn ($value, $key) => [ucfirst($key) => $value])
+                ->all(),
+        ]);
+
+        return true;
+    }
+
     public function getMemberDetails(Customer $customer, ?Purchase $purchase = null): MemberDetailsResponse
     {
         $response = $this->post('getMemberDetails?returnAssets=active&expand=assets.redeemable', [
@@ -164,7 +175,7 @@ class Api
             ->timeout($timeout)
             ->post(rtrim($this->url(), '/') . '/' . ltrim($endpoint, '/'), $params)
             ->throw();
-        
+        logger(json_encode($response->json()));
         if($response->json('status') === static::ERROR) {
             $errors = $response->json('errors');
             throw new ComoException($errors[0]['code'] . ': ' . $errors[0]['message']);
