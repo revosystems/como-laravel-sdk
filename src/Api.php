@@ -175,7 +175,7 @@ class Api
             ->timeout($timeout)
             ->post(rtrim($this->url(), '/') . '/' . ltrim($endpoint, '/'), $params)
             ->throw();
-        logger(json_encode($response->json()));
+
         if($response->json('status') === static::ERROR) {
             $errors = $response->json('errors');
             throw new ComoException($errors[0]['code'] . ': ' . $errors[0]['message']);
