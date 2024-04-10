@@ -487,14 +487,13 @@ it('can register member', function() {
     Http::assertSent(function (Request $request) {
         tap(json_decode($request->body(), true), function($data) {
             $this->assertCount(7, $data['registrationData']);
-            $this->assertEquals('34666666666', $data['registrationData']['phoneNumber']);
-            $this->assertEquals('name', $data['registrationData']['firstName']);
-            $this->assertEquals('last', $data['registrationData']['lastName']);
-            $this->assertEquals('test@test.test', $data['registrationData']['email']);
-            $this->assertTrue($data['registrationData']['allowSMS']);
-            $this->assertTrue($data['registrationData']['allowSMS']);
-            $this->assertTrue($data['registrationData']['allowEmail']);
-            $this->assertTrue($data['registrationData']['termsOfUse']);
+            $this->assertEquals('34666666666', $data['registrationData']['PhoneNumber']);
+            $this->assertEquals('name', $data['registrationData']['FirstName']);
+            $this->assertEquals('last', $data['registrationData']['LastName']);
+            $this->assertEquals('test@test.test', $data['registrationData']['Email']);
+            $this->assertTrue($data['registrationData']['AllowSMS']);
+            $this->assertTrue($data['registrationData']['AllowEmail']);
+            $this->assertTrue($data['registrationData']['TermsOfUse']);
         });
         return true;
     });
