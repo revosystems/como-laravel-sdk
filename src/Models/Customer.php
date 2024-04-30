@@ -19,13 +19,15 @@ class Customer implements ArrayableContract
         public ?string $temporaryToken = null,
         public ?string $commonExtId = null,
         public ?bool $allowEmail = null,
+        public ?bool $allowSMS = null,
+        public ?bool $termsOfUse = null,
     ){}
 
     public function registerData(): array
     {
         return array_filter(
             $this->toArray(),
-            fn ($key) => in_array($key, ['phoneNumber', 'email', 'firstName', 'lastName', 'allowEmail']),
+            fn ($key) => in_array($key, ['phoneNumber', 'email', 'firstName', 'lastName', 'allowEmail', 'allowSMS', 'termsOfUse']),
             ARRAY_FILTER_USE_KEY
         );
     }
